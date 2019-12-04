@@ -1,0 +1,22 @@
+{
+  "name": "DEFAULT",
+  "imageIndex": 0,
+  "upgrade": true,
+  "Values": {
+    "SPEED": 1,
+    "SIZE": 1,
+    "FIRERATE": 1
+  },
+  "Attributes": {
+    "PIERCING": false,
+    "SPLIT": false,
+    "BOOMERANG": false,
+    "RANDOMHUE": false,
+	"BOUNCY": false,
+	"BACKWARDS": false
+  },
+  "Player": {
+    "SPEED": 1,
+    "HEALTH": 0
+  }
+}

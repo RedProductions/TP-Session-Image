@@ -1,3 +1,6 @@
+///
+///Fade In/Out at the beginning/end of a level
+///
 class Fader{
   
   float alpha;
@@ -20,6 +23,9 @@ class Fader{
     
   }
   
+  ///
+  //Makes the fader start already black
+  ///
   void startUp(){
     up = false;
     alpha = 255;
@@ -29,6 +35,9 @@ class Fader{
   boolean isDone(){return done;}
   boolean isFadingIn(){return !up;}
   
+  ///
+  ///Updates the fade amount
+  ///
   void update(){
     
     if(up){
@@ -57,7 +66,9 @@ class Fader{
     
   }
   
-  
+  ///
+  ///Renders the fade
+  ///
   void show(){
     
     noStroke();

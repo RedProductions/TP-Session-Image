@@ -1,3 +1,6 @@
+///
+///Shell of an active physic object
+///
 abstract class GObject{
   
   PVector pos;

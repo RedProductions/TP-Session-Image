@@ -1,10 +1,14 @@
+///
+///Camera on top of the Map and Room
+///
 class ViewPort{
   
   PVector pos;
   float size;
   
   Room currentRoom;
-  
+  SoundObservable soundObs;
+  boolean finishedRoom;
   
   
   ViewPort(Room newRoom){
@@ -17,20 +21,40 @@ class ViewPort{
     pos.x = ((currentRoom.getX() + ceil(currentRoom.getSizeX()/2)) - VIEWPORT_GRID_WIDTH/2)*size - size*2.5;
     pos.y = ((currentRoom.getY() + currentRoom.getSizeY()/2) - VIEWPORT_GRID_HEIGHT/2)*size - size/2;
     
+    soundObs = new SoundObservable();
+    finishedRoom = true;
     
   }
   
+  SoundObservable getSoundObservable(){return soundObs;}
+  
+  ///
+  ///Centers itself on the given position
+  ///
   void setPos(PVector npos){
     pos.x = npos.x;
     pos.y = npos.y;
     
-    pos.x -= ceil(VIEWPORT_GRID_WIDTH/2 + 1)*size;
+    pos.x -= floor(VIEWPORT_GRID_WIDTH/2 + 3)*size;
     pos.y -= ceil(VIEWPORT_GRID_HEIGHT/2 + 1)*size;
     
   }
   
+  ///
+  ///Makes the given room the room to be visible
+  ///
   void setRoom(Room newRoom){
+    
     currentRoom = newRoom;
+    
+    if(currentRoom.getFlock().getEnemies().size() > 0){
+      soundObs.notifyObs();
+      soundObs.setSound(Sounds.DOOR_LOCK);
+      finishedRoom = false;
+    }
+    
+    currentRoom.visitRoom();
+    
   }
   
   PVector getPos(){return pos;}
@@ -40,6 +64,9 @@ class ViewPort{
   
   Room getRoom(){return currentRoom;}
   
+  ///
+  ///Limits the camera to the room edges
+  ///
   void limitCamera(){
     
     if(currentRoom.getSizeX() - 1 > VIEWPORT_GRID_WIDTH){
@@ -65,26 +92,42 @@ class ViewPort{
         pos.y = (currentRoom.getY() + currentRoom.getSizeY() - VIEWPORT_GRID_HEIGHT - 2)*size + size*0.5;
       }
       
+      
     }else {
       
-      pos.y = ((currentRoom.getY() + currentRoom.getSizeY()/2) - VIEWPORT_GRID_HEIGHT/2)*size - size;
+      pos.y = ((currentRoom.getY() + currentRoom.getSizeY()/2) - VIEWPORT_GRID_HEIGHT/2)*size - size*2;
       
     }
     
   }
   
-  
+  ///
+  ///Updates the current room and the camera position
+  ///
   void update(float delta, PVector playerPos){
     
     limitCamera();
     currentRoom.update(delta, playerPos);
+    if(currentRoom.getFlock().getEnemies().size() == 0){
+      if(!finishedRoom){
+        
+        soundObs.notifyObs();
+        soundObs.setSound(Sounds.DOOR_UNLOCK);
+        
+        finishedRoom = true;
+        
+      }
+    }
     
   }
   
-  
+  ///
+  ///Renders the current room
+  ///
   void show(){
     
     background(0);
+    noStroke();
     
     int x = getX();
     int y = getY();  

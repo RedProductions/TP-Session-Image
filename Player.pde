@@ -1,3 +1,6 @@
+///
+///Main player of the game
+///
 class Player extends GObject{
   
   boolean moving[];
@@ -12,13 +15,14 @@ class Player extends GObject{
   float fireSpeed;
   
   boolean firing;
-  float fireRate;
-  float lastFired;
   
   FiringObserver observer;
   ParticleObservable partObs;
+  SoundObservable soundObs;
   
   float accSpeed;
+  
+  private Projectiles projectiles;
   
   private boolean nextLevel;
   
@@ -33,13 +37,18 @@ class Player extends GObject{
   
   GUI gui;
   
+  
+  Modifier modifier;
+  
   Player(Room newRoom){
+    
+    
+    modifier = new Modifier();
     
     size = new PVector(width/VIEWPORT_GRID_WIDTH, height/VIEWPORT_GRID_HEIGHT);
     size.div(1.75);
     
     
-    resetLevel(newRoom);
     
     acc = new PVector();
     vel = new PVector();
@@ -53,41 +62,124 @@ class Player extends GObject{
     fireSpeed = TILE_SIZE_PIXELS/63;
     fireDir = new PVector(0, 0);
     
-    fireRate = 300;
-    lastFired = fireRate;
+    
     
     hurtRate = 1500;
     lastHurt = 0;
     
     
     maxHealth = PLAYER_STARTING_HEALTH;
-    health = maxHealth;
+    health = 6;
     
     accSpeed = TILE_SIZE_PIXELS/PLAYER_ACC_SPEED;
     
     alive = true;
+    
+    soundObs = new SoundObservable();
     
     gui = new GUI();
     
     gui.setHealth(health);
     gui.setMaxHealth(maxHealth);
     
+    projectiles = new Projectiles();
+    
+    resetLevel(newRoom, 0);
+    
+    
+    //UNCOMMENT FOR GOD MODE
+    //modifier.getAttributeMods()[AttributesModifiers.RANDOMHUE.ordinal()] = true;
+    //modifier.getAttributeMods()[AttributesModifiers.PIERCING.ordinal()] = true;
+    //modifier.getValueMods()[ValuesModifiers.FIRERATE.ordinal()] = 0.25;
+    //modifier.getValueMods()[ValuesModifiers.SIZE.ordinal()] = 3;
+    
+    applyModifier();
+    
   }
   
-  void resetLevel(Room newRoom){
+  ///
+  ///Resets the player for the next level
+  ///
+  void resetLevel(Room newRoom, int level){
     
     pos = new PVector((newRoom.getX() + newRoom.getSizeX()/2) * (width/VIEWPORT_GRID_RATIO), (newRoom.getY() + newRoom.getSizeY()/2) * (width/VIEWPORT_GRID_RATIO));
     firePos = new PVector(pos.x + size.x/2, pos.y + size.y/3);
     
     nextLevel = false;
     
+    gui.setLevel(level);
+    
     partObs = new ParticleObservable();
     
+    projectiles.clearProjectiles();
+    
   }
+  
+  
+  
+  
+  ///
+  ///Combines a given modifier to its current modifier
+  ///
+  void combineModifiers(Modifier mod){
+    modifier.combine(mod);
+    applyModifier();
+    
+    soundObs.notifyObs();
+    if(mod.isUpgrade()){
+      soundObs.setSound(Sounds.UPGRADE);
+    }else {
+      soundObs.setSound(Sounds.DOWNGRADE);
+    }
+    
+  }
+  
+  ///
+  ///Applies the modifier's attributes to the player
+  ///
+  void applyModifier(){
+    
+    float[] valuesMod = modifier.getPlayerMods();
+    
+    int index = PlayerModifiers.SPEED.ordinal();
+    accSpeed *= valuesMod[index];
+    
+    index = PlayerModifiers.HEALTH.ordinal();
+    
+    maxHealth += valuesMod[index];
+    
+    if(valuesMod[index] > 0){
+      for(int i = 0; i < valuesMod[index]/2; i++){
+        heal();
+      }
+    }else if(valuesMod[index] < 0){
+      health += (valuesMod[index] + 1);
+      getHit();
+    }
+    
+    
+    modifier.resetPlayerModifiers();
+    
+    projectiles.setModifier(modifier);
+    
+    
+  }
+  
+  
+  
+  ///
+  ///Forces the death of a player
+  ///
+  void kill(){alive = false;}
   
   boolean isAlive(){return alive;}
   
   ParticleObservable getParticleObservable(){return partObs;}
+  SoundObservable getSoundObservable(){return soundObs;}
+  
+  ///
+  ///Set the projectile fireing observer
+  ///
   void setObserver(FiringObserver nobserver){
     observer = nobserver;
   }
@@ -100,10 +192,20 @@ class Player extends GObject{
   
   boolean getNextLevel(){return nextLevel;}
   
+  Projectiles getProjectiles(){return projectiles;}
+  
+  ///
+  ///Default render method
+  ///
   void show(){}
   
-  
+  ///
+  ///Render method relative to the view port
+  ///
   void show(ViewPort view){
+    
+    projectiles.show(view);
+    
     
     int imageSizeX = PlayerTileSet.getImageWidth();
     int imageSizeY = PlayerTileSet.getImageHeight();
@@ -121,7 +223,12 @@ class Player extends GObject{
         translate(-size.x, 0);
       }
       
-      noStroke();
+      if(DEBUG){
+        stroke(0, 255, 0);
+        strokeWeight(3);
+      }else {
+        noStroke();
+      }
       noFill();
       
       beginShape();
@@ -159,6 +266,12 @@ class Player extends GObject{
       endShape();
       
       
+      if(DEBUG){
+        stroke(0, 150, 0);
+        rect(size.x*0.15, 0, size.x - (size.x*0.15) * 2, size.y*0.86);
+      }
+      
+      
     popMatrix();
     
     
@@ -166,6 +279,9 @@ class Player extends GObject{
     
   }
   
+  ///
+  ///Limites the speed of the player when moving
+  ///
   void limitSpeed(){
     
     if(vel.mag() > TILE_SIZE_PIXELS/PLAYER_MAX_SPEED){
@@ -174,12 +290,18 @@ class Player extends GObject{
     
   }
   
+  ///
+  ///Default update method
+  ///
   void update(float deltaTime){
     
-    
+    println("Woops! Wrong update!");
     
   }
   
+  ///
+  ///Updates the calculations and physics and changes the room when crossing a door
+  ///
   void update(float deltaTime, ViewPort view){
     
     PVector pastPos = pos.copy();
@@ -232,6 +354,7 @@ class Player extends GObject{
     if(doorDir != -1){
       
       if(view.getRoom().isBoss()){
+        heal();
         nextLevel = true;
       }
       
@@ -290,11 +413,13 @@ class Player extends GObject{
     
     if(firing){
       
-      if(currentTime - lastFired >= fireRate){
+      if(projectiles.canFire()){
         
         observer.notifyPropertyChanged();
+        soundObs.notifyObs();
+        soundObs.setSound(Sounds.PLAYER_SHOOT);
         
-        lastFired = currentTime;
+        projectiles.hasFired();
         
       }
       
@@ -302,48 +427,68 @@ class Player extends GObject{
     }
     
     
+    if(view.getRoom().getType(firePos.x, firePos.y) == GRID_ITEM){
+      if(!view.getRoom().hasTakenModifier()){
+        
+        combineModifiers(view.getRoom().getModifier());
+        
+        view.getRoom().takeModifier();
+      }
+    }
+    
+    
+    projectiles.update(deltaTime, view);
+    
     
   }
   
   
-  
+  ///
+  ///Handles a key pressed
+  ///
   void controll(char k){
     
-    if(k == 'a'){
-      moving[DIR_LEFT] = true;
-    }else if(k == 'd'){
-      moving[DIR_RIGHT] = true;
-    }
-    if(k == 'w'){
-      moving[DIR_UP] = true;
-    }else if(k == 's'){
-      moving[DIR_DOWN] = true;
-    }
-    
-    if(k == CODED){
+    if(alive){
+      if(k == 'a'){
+        moving[DIR_LEFT] = true;
+      }else if(k == 'd'){
+        moving[DIR_RIGHT] = true;
+      }
+      if(k == 'w'){
+        moving[DIR_UP] = true;
+      }else if(k == 's'){
+        moving[DIR_DOWN] = true;
+      }
       
-      if(keyCode == LEFT){
-        firing = true;
-        fireDir.x = -1;
-        fireDir.y = 0;
-      }else if(keyCode == RIGHT){
-        firing = true;
-        fireDir.x = 1;
-        fireDir.y = 0;
-      }else if(keyCode == UP){
-        firing = true;
-        fireDir.x = 0;
-        fireDir.y = -1;
-      }else if(keyCode == DOWN){
-        firing = true;
-        fireDir.x = 0;
-        fireDir.y = 1;
+      if(k == CODED){
+        
+        if(keyCode == LEFT){
+          firing = true;
+          fireDir.x = -1;
+          fireDir.y = 0;
+        }else if(keyCode == RIGHT){
+          firing = true;
+          fireDir.x = 1;
+          fireDir.y = 0;
+        }else if(keyCode == UP){
+          firing = true;
+          fireDir.x = 0;
+          fireDir.y = -1;
+        }else if(keyCode == DOWN){
+          firing = true;
+          fireDir.x = 0;
+          fireDir.y = 1;
+        }
+        
       }
       
     }
     
   }
   
+  ///
+  ///Handles a key released
+  ///
   void uncontroll(char k){
     
     if(k == 'a'){
@@ -381,15 +526,21 @@ class Player extends GObject{
     
   }
   
+  ///
+  ///Checks for a collision with an entire flock
+  ///
   void checkEnemyCollisions(Flock flock){
     checkEnemyCollisions(flock.getEnemies());
   }
   
+  ///
+  ///Check the collision for multiple enemies
+  ///
   void checkEnemyCollisions(ArrayList<Enemy> enemies){
     
     for(Enemy part : enemies){
       
-      if(collide(part.getCornerPos(), part.getSize())){
+      if(collide(part.getPos(), part.getSize())){
         if(currentTime - lastHurt >= hurtRate){
           part.notifyCollision();
           getHit();
@@ -401,11 +552,13 @@ class Player extends GObject{
     
   }
   
-  
+  ///
+  ///Tells if its hitbox is in collision with another hitbox
+  ///
   boolean collide(PVector pos2, PVector size2){
     
-    if(pos.x <= pos2.x + size2.x && pos.x + size.x >= pos2.x){
-      if(pos.y <= pos2.y + size2.y && pos.y + size.y >= pos2.y){
+    if(pos.x + size.x*0.15 <= pos2.x + size2.x/2 && pos.x + size.x - size.x*0.15 >= pos2.x - size2.x/2){
+      if(pos.y <= pos2.y + size2.y/2 && pos.y + size.y*0.86 >= pos2.y - size2.y/2){
         return true;
       }
     }
@@ -414,18 +567,51 @@ class Player extends GObject{
     
   }
   
-  
+  ///
+  ///Take damage
+  ///
   void getHit(){
     
     health--;
-    gui.setHealth(health);
+    updateGUI();
     
     partObs.notifyObs();
     partObs.setParticleParams(getFirePos(), ParticleType.STAR);
     
+    
+    
     if(health <= 0){
       alive = false;
+      soundObs.setSound(Sounds.PLAYER_DIE);
+    }else {
+      soundObs.setSound(Sounds.PLAYER_HURT);
     }
+    soundObs.notifyObs();
+    
+  }
+  
+  ///
+  ///Heal by one hearth
+  ///
+  void heal(){
+    
+    health += 2;
+    if(health > maxHealth){
+      health = maxHealth;
+    }
+    
+    updateGUI();
+    
+  }
+  
+  
+  ///
+  ///Updates the information of the GUI
+  ///
+  void updateGUI(){
+    
+    gui.setHealth(health);
+    gui.setMaxHealth(maxHealth);
     
   }
   

@@ -1,3 +1,6 @@
+///
+///Flies that act as a boid
+///
 class Enemy extends GObject {
   
   float topSpeed = 0.30;
@@ -21,6 +24,7 @@ class Enemy extends GObject {
   
   FlyProjectileObservable projObs;
   ParticleObservable partObs;
+  SoundObservable soundObs;
   
   int index;
   
@@ -33,6 +37,7 @@ class Enemy extends GObject {
     vel = new PVector();
     acc = new PVector();
   }
+  
   
   Enemy (PVector npos, int nindex) {
     
@@ -61,17 +66,22 @@ class Enemy extends GObject {
     
     partObs = new ParticleObservable();
     
+    soundObs = new SoundObservable();
+    
     
     alive = true;
-    life = 1;
+    life = 2;
     
   }
   
+  ///
+  ///Makes the enemy a boss enemy
+  ///
   void setBoss(int level){
     r = height/15;
-    life = 10 + level*2;
-    topSpeed = 0.15 * (float(level+1)/2);
-    topSteer = 0.007 * (float(level+1)/2);
+    life = 10 + floor(level*2);
+    topSpeed = 0.30 * (float(level+1)/3);
+    topSteer = 0.012 * (float(level+1)/2);
     boss = true;
   }
   
@@ -79,19 +89,32 @@ class Enemy extends GObject {
   
   PVector getPos(){return pos;}
   PVector getCornerPos(){return new PVector(pos.x - r, pos.y - r);}
-  PVector getSize(){return new PVector(r*2, r*2);}
+  PVector getSize(){return new PVector(r, r);}
   PVector getScreenPos(ViewPort view){return new PVector(pos.x - view.getPos().x + r, pos.y - view.getPos().y + r);}
   
-  ParticleObservable getParticleObservable(){return partObs;}
+  int getIndex(){return index;}
   
+  FlyProjectileObservable getProjectileObservable(){return projObs;}
+  ParticleObservable getParticleObservable(){return partObs;}
+  SoundObservable getSoundObservable(){return soundObs;}
+  
+  ///
+  ///Notifies the projectile that it has hit
+  ///
   void notifyCollision(){
     projObs.notifyObs();
   }
   
+  ///
+  ///Accelerates the entity
+  ///
   void addAcc(PVector nacc){
     acc.add(nacc);
   }
   
+  ///
+  ///Updates calculations and physics 
+  ///
   void update(float deltaTime) {
     
     if(projObs.isNotified()){
@@ -104,7 +127,7 @@ class Enemy extends GObject {
     }
     
     vel.add (acc);
-    vel.limit(topSpeed);
+    vel.limit(topSpeed * 1120 / width);
     pos.add (vel);
 
     acc.mult (0);    
@@ -121,26 +144,22 @@ class Enemy extends GObject {
   
   
   
-  void limitScreen(ViewPort view){
-    
-    PVector screenPos = getScreenPos(view);
-    
-    if(screenPos.x + r < 0 || screenPos.x - r > width){
-      alive = false;
-    }
-    if(screenPos.y + r < 0 || screenPos.y - r > height){
-      alive = false;
-    }
-    
-  }
-  
-  
+  ///
+  ///Default render method
+  ///
   void show(){}
   
+  ///
+  ///Render method relative to the view port
+  ///
   void show(ViewPort view) {
     
     noFill();
-    noStroke();
+    if(DEBUG){
+      stroke(255, 0, 0);
+    }else {
+      noStroke();
+    }
     
     theta = vel.heading() + radians(90);
     
@@ -149,7 +168,7 @@ class Enemy extends GObject {
     translate(pos.x, pos.y, 3);
     
     pushMatrix();
-    rotate (theta);
+    //rotate (theta);
     
     
     
@@ -171,10 +190,13 @@ class Enemy extends GObject {
       
     popMatrix();
     
-    limitScreen(view);
+    //limitScreen(view);
     
   }
   
+  ///
+  ///Flock separation
+  ///
   PVector separate (ArrayList<Enemy> Enemys) {
     PVector steer = new PVector(0, 0, 0);
     
@@ -208,6 +230,9 @@ class Enemy extends GObject {
     return steer.mult(seperationWeight);
   }
   
+  ///
+  ///Flock alignment
+  ///
   PVector align (ArrayList<Enemy> Enemys) {
     PVector sum = new PVector(0, 0);
     
@@ -236,7 +261,9 @@ class Enemy extends GObject {
     }
   }
   
-  // REGARDE LE GROUPE ET 
+  ///
+  ///Flock attraction
+  ///
   PVector cohesion(ArrayList<Enemy> Enemys) {
     PVector sum = new PVector(0, 0);
     
@@ -260,6 +287,9 @@ class Enemy extends GObject {
     }
   }
   
+  ///
+  ///Sets the boid a directionnal goal
+  ///
   PVector seek (PVector target) {
     // Vecteur différentiel vers la cible
     PVector desired = PVector.sub (target, this.pos);
@@ -276,7 +306,9 @@ class Enemy extends GObject {
   
   
   
-  
+  ///
+  ///Damage the enemy
+  ///
   void bleed(){
     partObs.notifyObs();
     if(boss){
@@ -284,6 +316,19 @@ class Enemy extends GObject {
     }else {
       partObs.setParticleParams(pos, ParticleType.BLOOD);
     }
+    
+    soundObs.notifyObs();
+    if(boss){
+      if(life <= 0){
+        soundObs.setSound(Sounds.BIG_FLY_DIE);
+      }else {
+        soundObs.setSound(Sounds.BIG_FLY_HURT);
+      }
+    }else {
+      soundObs.setSound(Sounds.FLY_DIE);
+    }
+    
+    
   }
   
   

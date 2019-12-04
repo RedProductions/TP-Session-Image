@@ -1,5 +1,11 @@
+///
+///Observer to recieve a notification that an Enemy has been hit by a Projectile
+///
 class FlyProjectileObserver extends EventObserver{
   
+  ///
+  ///Get the index of the hit fly
+  ///
   int getNotifiedIndex(){
     
     int index = -1;

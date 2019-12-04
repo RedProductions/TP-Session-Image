@@ -1,3 +1,6 @@
+///
+///Particle emmited when the Player gets hit
+///
 class StarParticle extends Particle{
   
   float rotation;
@@ -22,6 +25,9 @@ class StarParticle extends Particle{
     
   }
   
+  ///
+  ///Updates the calculations and the physics
+  ///
   void update(float deltaTime){
     
     phys();
@@ -30,7 +36,14 @@ class StarParticle extends Particle{
     
   }
   
+  ///
+  ///Default render method
+  ///
   void show(){}
+  
+  ///
+  ///Render method relative to the view port
+  ///
   void show(ViewPort view){
     
     

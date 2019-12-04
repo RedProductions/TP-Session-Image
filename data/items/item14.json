@@ -1,0 +1,20 @@
+{
+  "name": "WOW THERE BUCKAROO!",
+  "imageIndex": 0,
+  "upgrade": false,
+  "Values": {
+    "SPEED": 0.85,
+    "SIZE": 1,
+    "FIRERATE": 1.35
+  },
+  "Attributes": {
+    "PIERCING": false,
+    "SPLIT": false,
+    "BOOMERANG": false,
+    "RANDOMHUE": false
+  },
+  "Player": {
+    "SPEED": 0.85,
+    "HEALTH": 0
+  }
+}

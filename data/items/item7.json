@@ -1,0 +1,20 @@
+{
+  "name": "I AM SPEED!",
+  "imageIndex": 0,
+  "upgrade": true,
+  "Values": {
+    "SPEED": 1.35,
+    "SIZE": 1,
+    "FIRERATE": 1
+  },
+  "Attributes": {
+    "PIERCING": false,
+    "SPLIT": false,
+    "BOOMERANG": false,
+    "RANDOMHUE": false
+  },
+  "Player": {
+    "SPEED": 1.15,
+    "HEALTH": 0
+  }
+}

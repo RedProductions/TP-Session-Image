@@ -1,3 +1,6 @@
+///
+///Images needed for the Player
+///
 static class PlayerTileSet{
   
   static PImage[] frontImages;
@@ -10,12 +13,6 @@ static class PlayerTileSet{
   
   static int tileSizeX;
   static int tileSizeY;
-  
-  PlayerTileSet(PApplet app){
-    
-    generate(app);
-    
-  }
   
   
   static void generate(PApplet app){

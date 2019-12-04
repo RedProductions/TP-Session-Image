@@ -1,6 +1,10 @@
+///
+///Handles all the Particle
+///
 class Particles{
   
   ArrayList<Particle> particles;
+  
   ParticleFactory factory;
   
   ParticleObserver obs;
@@ -17,7 +21,9 @@ class Particles{
   
   ParticleObserver getParticleObserver(){return obs;}
   
-  
+  ///
+  ///Updates all the particles
+  ///
   void update(float deltaTime){
     
     for(int i = particles.size() - 1; i >= 0; i--){
@@ -42,7 +48,9 @@ class Particles{
     
   }
   
-  
+  ///
+  ///Renders all the particles
+  ///
   void show(ViewPort view){
     
     for(Particle part : particles){
@@ -54,7 +62,9 @@ class Particles{
   
   
   
-  
+  ///
+  ///Creates a single particle and adds it to its list
+  ///
   void addParticle(PVector pos, ParticleType type){
     
     Particle part = factory.getParticle(type);
@@ -63,7 +73,9 @@ class Particles{
     
   }
   
-  
+  ///
+  ///Creates multiple particles and adds them to its list
+  ///
   void addParticles(int amount, PVector pos, ParticleType type){
     
     for(int i = 0; i < amount; i++){
@@ -72,10 +84,16 @@ class Particles{
     
   }
   
+  ///
+  ///Add a particle creation observable
+  ///
   void addObservable(Observable nobs){
     obs.addObservable(nobs);
   }
   
+  ///
+  ///Adds multiple particle creation observable
+  ///
   void addObservables(ArrayList<Observable> nobs){
     for(Observable part : nobs){
       obs.addObservable(part);

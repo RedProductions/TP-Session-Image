@@ -1,0 +1,17 @@
+{
+  "name": "WAVEY!",
+  "imageIndex": 0,
+  "upgrade": false,
+  "Values": {
+    "SPEED": 1,
+    "SIZE": 1,
+    "FIRERATE": 1
+  },
+  "Attributes": {
+	"WAVE": true
+  },
+  "Player": {
+    "SPEED": 1,
+    "HEALTH": 0
+  }
+}

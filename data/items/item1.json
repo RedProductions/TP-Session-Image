@@ -1,0 +1,14 @@
+{
+  "name": "CRAYOLA",
+  "imageIndex": 1,
+  "upgrade": true,
+  "Values": {
+    "SPEED": 1.15,
+    "SIZE": 0.8,
+    "FIRERATE": 0.9
+  },
+  "Attributes": {
+    "PIERCING": true,
+    "RANDOMHUE": true
+  }
+}

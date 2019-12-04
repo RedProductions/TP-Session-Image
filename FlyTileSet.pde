@@ -1,15 +1,12 @@
+///
+///Images of the Enemy
+///
 static class FlyTileSet{
   
   static PImage[] images;
   
   static int tileSizeX;
   static int tileSizeY;
-  
-  FlyTileSet(PApplet app){
-    
-    generate(app);
-    
-  }
   
   
   static void generate(PApplet app){

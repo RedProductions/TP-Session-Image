@@ -1,3 +1,6 @@
+///
+///Handles the grid, the list of Room and the miniMap of the current level
+///
 class Map {
 
   int gridWidth, gridHeight;
@@ -17,7 +20,7 @@ class Map {
     
     gridWidth = width/GRID_RATIO;
     gridHeight = height/GRID_RATIO;
-
+    
     grid = new int[gridWidth][gridHeight];
     visited = new boolean[gridWidth][gridHeight];
     
@@ -30,7 +33,9 @@ class Map {
   
   
   
-  
+  ///
+  ///Changes the size of the fullscreen map when the screen size changes(WIP)
+  ///
   void resetSize(){
     
     map = createGraphics(width, height);
@@ -65,7 +70,9 @@ class Map {
     return j;
   }
 
-
+  ///
+  ///Changes a cell to be walkable or not
+  ///
   void toggleGrid(float x, float y) {
 
     int i = floor(x * getSizeX() / width);
@@ -78,6 +85,9 @@ class Map {
     }
   }
 
+  ///
+  ///Tells if the given index is in bounds of the grid
+  ///
   boolean inGrid(int i, int j) {
 
     if (i >= 0 && i < grid.length && j >= 0 && j < grid[0].length) {
@@ -86,7 +96,10 @@ class Map {
 
     return false;
   }
-
+  
+  ///
+  ///Sets the given cell to be walkable
+  ///
   void setWalkable(int i, int j) {
 
     if (inGrid(i, j)) {
@@ -94,13 +107,19 @@ class Map {
     }
   }
 
+  ///
+  ///Sets the given cell to be non-walkable
+  ///
   void setObstacle(int i, int j) {
 
     if (inGrid(i, j)) {
       grid[i][j] = GRID_OBSTACLE;
     }
   }
-
+  
+  ///
+  ///Sets the cell at the given global position to be walkable
+  ///
   void setRWalkable(float x, float y) {
 
     int i = floor(x * getSizeX() / width);
@@ -108,7 +127,10 @@ class Map {
 
     setWalkable(i, j);
   }
-
+  
+  ///
+  ///Sets the cell at the given global position to be non-walkable
+  ///
   void setRObstacle(float x, float y) {
 
     int i = floor(x * getSizeX() / width);
@@ -117,7 +139,9 @@ class Map {
     setObstacle(i, j);
   }
 
-
+  ///
+  ///Tells if the given cell is walkable
+  ///
   boolean isWalkable(int i, int j) {
 
     if (inGrid(i, j)) {
@@ -129,6 +153,9 @@ class Map {
     return false;
   }
 
+  ///
+  ///Tells if the given cell is non-walkable
+  ///
   boolean isObstacle(int i, int j) {
 
     if (inGrid(i, j)) {
@@ -139,7 +166,10 @@ class Map {
 
     return false;
   }
-
+  
+  ///
+  ///Tells if the cell at the given global position is walkable
+  ///
   boolean isRWalkable(float x, float y) {
 
     int i = floor(x * getSizeX() / width);
@@ -154,7 +184,10 @@ class Map {
 
     return false;
   }
-
+  
+  ///
+  ///Tells if the cell at the given global position is non-walkable
+  ///
   boolean isRObstacle(float x, float y) {
 
     int i = floor(x * getSizeX() / width);
@@ -169,18 +202,45 @@ class Map {
     return false;
   }
 
-
+  ///
+  ///Sets the given cell to a cell that has been visited by the player
+  ///
   void visitGrid(int i, int j) {
 
-    visited[i][j] = true;
+    if(i >= 0 && i < visited.length){
+      if(j >= 0 && j < visited[0].length){
+        visited[i][j] = true;
+      }
+    }
+    
   }
   
+  ///
+  ///Updates the rooms and the grid
+  ///
   void update(){
     
-    
+    for(Room part : rooms){
+      
+      if(part.isVisited()){
+        
+        for(int i = part.getX() - 1; i <= part.getX() + part.getSizeX(); i++){
+          for(int j = part.getY() - 1; j <= part.getY() + part.getSizeY(); j++){
+            
+            visitGrid(i, j);
+            
+          }
+        }
+        
+      }
+      
+    }
     
   }
 
+  ///
+  ///Renders a simplified minimap
+  ///
   void showSimple() {
 
     map.noStroke();
@@ -196,63 +256,132 @@ class Map {
     }
   }
 
+  ///
+  ///Renders the normal minimap
+  ///
   void show(){
     
     map.beginDraw();
       
     map.colorMode(RGB);
-    map.background(0);
+    map.background(0,0);
     
     map.noStroke();  
 
     for (int i = 0; i < grid.length; i++) {
       for (int j = 0; j < grid[0].length; j++) {
 
-        if (grid[i][j] == GRID_WALKABLE) {
+        if(grid[i][j] == GRID_WALKABLE) {
 
-          if (visited[i][j]) {
-            map.fill(100);
-          }else {
-            map.fill(150, 255, 255);
+          if(visited[i][j]) {
+            map.fill(75, 175);
+            map.rect(i * (width/getSizeX()), j * (height/getSizeY()), (width/getSizeX()), (height/getSizeY()));
           }
           
-        } else if (grid[i][j] == GRID_OBSTACLE) {
-          map.fill(255);
-        }else if(grid[i][j] == GRID_WALL){
-          map.fill(150, 0, 0);
-        }else if(grid[i][j] == GRID_BOSS_WALL){
-          map.fill(150, 150, 0);
+        }else if(grid[i][j] == GRID_WALL || grid[i][j] == GRID_BOSS_WALL){
+          if (visited[i][j]) {
+            map.fill(25, 175);
+            map.rect(i * (width/getSizeX()), j * (height/getSizeY()), (width/getSizeX()), (height/getSizeY()));
+          }
         }
         
         
-        map.rect(i * (width/getSizeX()), j * (height/getSizeY()), (width/getSizeX()), (height/getSizeY()));
         
       }
       
     }
-
-    map.fill(255);
-    map.rect(0, height, width, height + (height/getSizeY())/2);
-    map.rect(width, 0, width + (width/getSizeX())/2, height + (height/getSizeY())/2);
     
     map.endDraw();
     
+    pushMatrix();
+    translate(width - width/5, 0, 6);
+    
+    noStroke();
     
     beginShape();
+      
+      texture(map);
+      
+      int mapHeight = map.height * floor(width/5) / map.width;
+      
+      vertex(0, 0, 0, 0);
+      vertex(width/5, 0, map.width, 0);
+      vertex(width/5, mapHeight, map.width, map.height);
+      vertex(0, mapHeight, 0, map.height);
+      
+      
+    endShape();
     
+    popMatrix();
+    
+  }
+  
+  ///
+  ///Renders the complete map with all grid information
+  ///
+  void showFull(){
+    
+    
+    map.beginDraw();
+      
+    map.colorMode(RGB);
+    map.background(25);
+    
+    map.noStroke();  
+
+    for (int i = 0; i < grid.length; i++) {
+      for (int j = 0; j < grid[0].length; j++) {
+
+        if(grid[i][j] == GRID_WALKABLE) {
+
+          if(grid[i][j] == GRID_ITEM){
+            map.fill(255, 255, 0);
+          }else {
+            map.fill(255);
+          }
+          map.rect(i * (width/getSizeX()), j * (height/getSizeY()), (width/getSizeX()), (height/getSizeY()));
+          
+        }else if(grid[i][j] == GRID_WALL){
+            map.fill(175);
+            map.rect(i * (width/getSizeX()), j * (height/getSizeY()), (width/getSizeX()), (height/getSizeY()));
+        }else if(grid[i][j] == GRID_BOSS_WALL){
+          map.fill(175, 0, 0);
+          map.rect(i * (width/getSizeX()), j * (height/getSizeY()), (width/getSizeX()), (height/getSizeY()));
+        }
+        
+        
+        
+        
+      }
+      
+    }
+    
+    map.endDraw();
+    
+    pushMatrix();
+    
+    noStroke();
+    
+    beginShape();
+      
       texture(map);
       
       vertex(0, 0, 0, 0);
       vertex(width, 0, map.width, 0);
       vertex(width, height, map.width, map.height);
       vertex(0, height, 0, map.height);
-    
+      
+      
     endShape();
+    
+    popMatrix();
     
   }
   
-  
-  void createGrid() {
+  ///
+  ///Initiates the generation of the room maze and spawns in the flocks
+  ///
+  public void createGrid() {
 
     for (int i = 0; i < getSizeX(); i++) {
       for (int j = 0; j < getSizeY(); j++) {
@@ -270,10 +399,16 @@ class Map {
       
     }
     
-    rooms.get(0).createFlock(0, level);
+    Room spawnRoom = rooms.get(0);
+    
+    spawnRoom.createFlock(0, level);
+    spawnRoom.visitRoom();
     
   }
   
+  ///
+  ///Generates the rooms for the maze and sets the boss and item room
+  ///
   void createDungeon(){
     
     if(rooms != null){
@@ -299,7 +434,15 @@ class Map {
       tries++;
     }
     
+    
     rooms.get(rooms.size() - 1).setBoss();
+    rooms.get(rooms.size() - 2).setItem();
+    
+    int itemX = rooms.get(rooms.size() - 2).getX() + rooms.get(rooms.size() - 2).getSizeX()/2;
+    int itemY = rooms.get(rooms.size() - 2).getY() + rooms.get(rooms.size() - 2).getSizeY()/2;
+    
+    
+    
     
     for(Room part : rooms){
       
@@ -332,8 +475,14 @@ class Map {
       
     }
     
+    
+    grid[itemX][itemY] = GRID_ITEM;
+    
   }
   
+  ///
+  ///Recursively creates a room in the maze
+  ///
   void createRoom(Room neighbour){
     
     for(int side = 0; side < 4; side++){
@@ -452,61 +601,42 @@ class Map {
   }
   
   
-  
+  ///
+  ///Tells if a room is in bound of the grid
+  ///
   boolean inRoom(int x, int y, int sx, int sy){
     
-    if(x >= 0 && x + sx < gridWidth && y >= 0 && y + sy < gridHeight){
+    //minimum at 4 to prevent in-between where the view port would glitch between room edge and world edge
+    if(x >= 4 && x + sx < gridWidth && y >= 5 && y + sy < gridHeight){
       return true;
     }
     return false;
     
   }
 
-
-  void carvePassage(int i, int j) {
-
-    for (int swap = 0; swap < random(20, 30); swap++) {
-
-      int pos1 = int(random(4));
-      int pos2 = int(random(4));
-
-      while (pos2 == pos1) {
-        pos2 = int(random(4));
+  
+  
+  ///
+  ///Passes the observers to the flocks
+  ///
+  void setEnemiesObservables(ParticleObserver npartObs, SoundObserver nsoundObs){
+    
+    for(Room part : rooms){
+      for(Enemy opart : part.getFlock().getEnemies()){
+        npartObs.addObservable(opart.getParticleObservable());
+        nsoundObs.addObservable(opart.getSoundObservable());
       }
-
-      int oldVal = DIR[pos1];
-      DIR[pos1] = DIR[pos2];
-      DIR[pos2] = oldVal;
-    }
-
-    for (int k = 0; k < 4; k++) {
-
-      int offsetX = DIRX[DIR[k]];
-      int offsetY = DIRY[DIR[k]];
-
-      if (inGrid(i + offsetX, j + offsetY)) {
-
-        if (grid[i + offsetX][j + offsetY] == GRID_OBSTACLE) {
-
-          grid[i + offsetX][j + offsetY] = GRID_WALKABLE;
-          grid[i + offsetX/2][j + offsetY/2] = GRID_WALKABLE;
-          carvePassage(i + offsetX, j + offsetY);
-        }
-        
-      }
-      
     }
     
   }
   
-  
-  
-  void setEnemiesObservables(ParticleObserver obs){
+  ///
+  ///Passes the message observer to the rooms
+  ///
+  void setMessageObservables(MessageObserver messObs){
     
     for(Room part : rooms){
-      for(Enemy opart : part.getFlock().getEnemies()){
-        obs.addObservable(opart.getParticleObservable());
-      }
+      messObs.addObservable(part.getMessageObservale());
     }
     
   }

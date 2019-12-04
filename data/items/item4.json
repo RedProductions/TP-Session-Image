@@ -1,0 +1,20 @@
+{
+  "name": "SLOW POKE",
+  "imageIndex": 4,
+  "upgrade": false,
+  "Values": {
+    "SPEED": 1,
+    "SIZE": 1,
+    "FIRERATE": 1
+  },
+  "Attributes": {
+    "PIERCING": false,
+    "SPLIT": false,
+    "BOOMERANG": false,
+    "RANDOMHUE": false
+  },
+  "Player": {
+    "SPEED": 0.8,
+    "HEALTH": 0
+  }
+}

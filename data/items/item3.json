@@ -1,0 +1,20 @@
+{
+  "name": "CROSS EYED?",
+  "imageIndex": 3,
+  "upgrade": false,
+  "Values": {
+    "SPEED": 1,
+    "SIZE": 1,
+    "FIRERATE": 1
+  },
+  "Attributes": {
+    "PIERCING": false,
+    "SPLIT": true,
+    "BOOMERANG": false,
+    "RANDOMHUE": false
+  },
+  "Player": {
+    "SPEED": 1,
+    "HEALTH": 0
+  }
+}

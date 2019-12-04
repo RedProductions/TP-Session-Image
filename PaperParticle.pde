@@ -1,3 +1,6 @@
+///
+///Particle emmited when a projectile has hit
+///
 class PaperParticle extends Particle{
   
   float rotation;
@@ -22,6 +25,9 @@ class PaperParticle extends Particle{
     
   }
   
+  ///
+  ///Updates the calculations and physics
+  ///
   void update(float deltaTime){
     
     phys();
@@ -30,9 +36,15 @@ class PaperParticle extends Particle{
     
   }
   
+  ///
+  ///Default rendering method
+  ///
   void show(){}
+  
+  ///
+  ///Rendering method relative to the view port
+  ///
   void show(ViewPort view){
-    
     
     noFill();
     noStroke();

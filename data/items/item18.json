@@ -1,0 +1,20 @@
+{
+  "name": "SO TINY!",
+  "imageIndex": 0,
+  "upgrade": true,
+  "Values": {
+    "SPEED": 1.3,
+    "SIZE": 0.75,
+    "FIRERATE": 0.85
+  },
+  "Attributes": {
+    "PIERCING": false,
+    "SPLIT": false,
+    "BOOMERANG": false,
+    "RANDOMHUE": false
+  },
+  "Player": {
+    "SPEED": 1.1,
+    "HEALTH": 0
+  }
+}

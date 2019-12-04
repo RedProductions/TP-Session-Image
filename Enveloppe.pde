@@ -1,28 +1,38 @@
+///
+///Main class that holds and handles everything
+///
 class Enveloppe{
   
   Map map;
   ViewPort view;
   
   Player player;
-  Projectiles projectiles;
   
   Particles particles;
   
   Fader fader;
+  SoundPlayer soundPlayer;
+  Message message;
   
   int level;
-  
   boolean showMap;
+  
   boolean createLevel;
   
-  Enveloppe(){
+  PApplet app;
+  
+  Enveloppe(PApplet napp){
+    
+    app = napp;
     
     createAll();
     
   }
   
   
-  
+  ///
+  ///Updates all calculations and all physics
+  ///
   void update(float deltaTime){
     
     
@@ -35,8 +45,7 @@ class Enveloppe{
         view.setPos(player.getFirePos());
         view.update(deltaTime, player.getFirePos());
         
-        projectiles.update(deltaTime, view);
-        projectiles.checkEnemyCollisions(view.getRoom().getFlock());
+        
         
         
         particles.update(deltaTime);
@@ -44,8 +53,12 @@ class Enveloppe{
         player.update(deltaTime, view);
         player.checkEnemyCollisions(view.getRoom().getFlock());
         
+        player.getProjectiles().checkEnemyCollisions(view.getRoom().getFlock());
+        
         
       }
+      
+      message.update(deltaTime);
       
     }else {
       
@@ -58,28 +71,34 @@ class Enveloppe{
       view.update(deltaTime, player.getFirePos());
     }
     
+    soundPlayer.update();
     
   }
   
   
-  
+  ///
+  ///Renders everything
+  ///
   void show(){
     
     if(showMap){
-      map.show();
+      map.showFull();
     }else {
-      view.show();
+      view.show();//SCREEN RESET
       
       particles.show(view);
       
-      projectiles.show(view);
+  
       player.show(view);
       
+      map.update();
+      map.show();
+      
+      message.show();
       
       if(!fader.isDone()){
         fader.show();
       }
-      
     }
     
   }
@@ -87,56 +106,85 @@ class Enveloppe{
   
   
   
-  
+  ///
+  ///Resets the map size if the screen dimensions change (WIP)
+  ///
   void resetSize(){
     
     map.resetSize();
     
   }
   
+  ///
+  ///Handles the key presses
+  ///
   void controll(char k){
     
     if(k == 'r'){
+      player.kill();
       createAll();
     }else if(k == 'm'){
-      showMap = !showMap;
+      soundPlayer.toggleMusic();
+    }else if(k == ENTER){
+      if(SV_CHEAT){
+        showMap = !showMap;
+      }
     }else {
       player.controll(k);
     }
     
   }
   
+  ///
+  ///Handles the key releases
+  ///
   void uncontoll(char k){
     
     player.uncontroll(k);
     
   }
   
+  ///
+  ///Generate everything for a new level
+  ///
   void nextLevel(){
     
     level++;
     map = new Map(level);
-    //map.show();
     
-    view = new ViewPort(map.getCurrentRoom());
+    message = new Message();
+    map.setMessageObservables(message);
     
-    if(player == null || !player.isAlive()){
-      player = new Player(map.getCurrentRoom());
+    if(soundPlayer == null){
+      soundPlayer = new SoundPlayer(app);
     }else {
-      player.resetLevel(map.getCurrentRoom());
+      soundPlayer.clearObservables();
     }
     
-    projectiles = new Projectiles();
+    view = new ViewPort(map.getCurrentRoom());
+    soundPlayer.addObservable(view.getSoundObservable());
+    
+    if(player == null || !player.isAlive()){
+      if(player != null){
+        soundPlayer.resetMusic();
+      }
+      player = new Player(map.getCurrentRoom());
+    }else {
+      player.resetLevel(map.getCurrentRoom(), level);
+    }
+    soundPlayer.addObservable(player.getSoundObservable());
+    
+    player.getProjectiles().setSoundObserver(soundPlayer.getObserver());
     
     particles = new Particles();
     particles.addObservable(player.getParticleObservable());
     
-    FiringObserver firingObserver = new FiringObserver(player, projectiles);
+    FiringObserver firingObserver = new FiringObserver(player, player.getProjectiles());
     player.setObserver(firingObserver);
-    projectiles.setObservant(firingObserver);
-    projectiles.setObserver(particles.getParticleObserver());
+    player.getProjectiles().setObservant(firingObserver);
+    player.getProjectiles().setParticleObserver(particles.getParticleObserver());
     
-    map.setEnemiesObservables(particles.getParticleObserver());
+    map.setEnemiesObservables(particles.getParticleObserver(), soundPlayer.getObserver());
     
     view.setPos(player.getFirePos());
     
@@ -144,7 +192,9 @@ class Enveloppe{
     
   }
   
-  
+  ///
+  ///Restarts the entire game
+  ///
   void createAll(){
     
     createLevel = true;

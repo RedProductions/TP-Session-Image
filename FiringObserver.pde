@@ -1,3 +1,6 @@
+///
+///Observer to make the Player fire Projectiles
+///
 class FiringObserver extends Observer{
   
   Player observable;
@@ -8,10 +11,16 @@ class FiringObserver extends Observer{
     observer = nobserver;
   }
   
+  ///
+  ///Notifies the observer
+  ///
   public void notifyPropertyChanged(){
     setPassingParameters(observable.getFirePos(), observable.getFireVel(), observable.getTeam());
   }
   
+  ///
+  ///Creates a projectile for the observer
+  ///
   private void setPassingParameters(PVector pos, PVector vel, int team){
     observer.addProjectile(pos, vel, team);
   }

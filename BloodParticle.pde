@@ -1,3 +1,6 @@
+///
+///Particle emmited when an enemy is hit
+///
 class BloodParticle extends Particle{
   
   BloodParticle(){
@@ -18,6 +21,9 @@ class BloodParticle extends Particle{
     
   }
   
+  ///
+  ///Calculation and physics update
+  ///
   void update(float deltaTime){
     
     phys();
@@ -26,7 +32,14 @@ class BloodParticle extends Particle{
     
   }
   
+  ///
+  ///Default render
+  ///
   void show(){}
+  
+  ///
+  ///Render relative to the view port
+  ///
   void show(ViewPort view){
     
     

@@ -1,3 +1,6 @@
+///
+///Images needed for the Projectile
+///
 static class ProjectileTileSet{
   
   static PImage[] images;
@@ -5,18 +8,16 @@ static class ProjectileTileSet{
   static int tileSizeX;
   static int tileSizeY;
   
-  ProjectileTileSet(PApplet app){
-    
-    generate(app);
-    
-  }
-  
   
   static void generate(PApplet app){
     
-    images = new PImage[1];
+    images = new PImage[5];
     
     images[0] = app.loadImage("gfx/projectiles/collidables/paperball.png");
+    images[1] = app.loadImage("gfx/projectiles/collidables/pencil.png");
+    images[2] = app.loadImage("gfx/projectiles/collidables/boomerang.png");
+    images[3] = app.loadImage("gfx/projectiles/collidables/boomerpencil.png");
+    images[4] = app.loadImage("gfx/projectiles/collidables/ball.png");
     
     
     tileSizeX = images[0].width;

@@ -1,25 +1,13 @@
+///
+///Observer that reads the notifications of the Particle Observable to spawn a Particle when needed
+///
 class ParticleObserver extends EventObserver{
   
   int getNotifiedIndex(){return 0;}
   
-  public void findType(ParticleType type){
-    
-    for(Observable part : obs){
-      
-      if(((ParticleObservable)part).getParams() != null){
-        if(((ParticleObservable)part).getParams().type == ParticleType.STAR){
-          if(part.isNotified()){
-            println("NOTIFIED STAR");
-          }else {
-            println("SILENT STAR");
-          }
-        }
-      }
-      
-    }
-    
-  }
-  
+  ///
+  ///Returns the passing the first found parameters of a spawning particle
+  ///
   public ParticleParams getParams(){
     
     boolean foundPos = false;
@@ -43,7 +31,9 @@ class ParticleObserver extends EventObserver{
     
   }
   
-  
+  ///
+  ///Tells if particles must be spawned
+  ///
   boolean hasNotification(){
     
     boolean found = false;

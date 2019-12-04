@@ -1,0 +1,20 @@
+{
+  "name": "SO HEAVY!",
+  "imageIndex": 0,
+  "upgrade": true,
+  "Values": {
+    "SPEED": 0.5,
+    "SIZE": 2,
+    "FIRERATE": 1.75
+  },
+  "Attributes": {
+    "PIERCING": false,
+    "SPLIT": false,
+    "BOOMERANG": false,
+    "RANDOMHUE": false
+  },
+  "Player": {
+    "SPEED": 0.75,
+    "HEALTH": 0
+  }
+}

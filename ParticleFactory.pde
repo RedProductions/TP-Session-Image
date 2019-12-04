@@ -1,17 +1,23 @@
+///
+///Types of Particle that can be created
+///
 enum ParticleType{
   
-  BLOOD,
-  MEGABLOOD,
+  BLOOD, MEGABLOOD,
   PAPER,
   STAR
   
 }
 
-
+///
+///Generates a Particle from its given type
+///
 class ParticleFactory{
   
   
-  
+  ///
+  ///Gives the particle from its given type
+  ///
   Particle getParticle(ParticleType type){
     
     switch(type){

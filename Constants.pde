@@ -9,7 +9,8 @@ final float AIR_DENSITY = 0.97;
 final float PIXEL_TO_METER = 100;
 
 
-
+final boolean DEBUG = false;
+final boolean SV_CHEAT = false;
 
 //=====TILES=====\\
 
@@ -42,6 +43,19 @@ static int TILES_BOTTOM_DOOR_NEXT = 18;
 static int TILES_LEFT_DOOR_NEXT = 19;
 static int TILES_RIGHT_DOOR_NEXT = 20;
 
+static int TILES_DEFAULT_ITEM = 21;
+static int TILES_DEFAULT_ITEM_OPENED = 22;
+
+static int TILES_TOP_DOOR_LOCKED_BOSS = 23;
+static int TILES_BOTTOM_DOOR_LOCKED_BOSS = 24;
+static int TILES_LEFT_DOOR_LOCKED_BOSS = 25;
+static int TILES_RIGHT_DOOR_LOCKED_BOSS = 26;
+
+static int TILES_TOP_DOOR_BOSS = 27;
+static int TILES_BOTTOM_DOOR_BOSS = 28;
+static int TILES_LEFT_DOOR_BOSS = 29;
+static int TILES_RIGHT_DOOR_BOSS = 30;
+
 //=====GRID=====\\
 
 final int GRID_WALKABLE = 0;
@@ -49,12 +63,14 @@ final int GRID_OBSTACLE = 1;
 final int GRID_WALL = 2;
 final int GRID_BOSS_WALL = 3;
 final int GRID_DOOR = 4;
+final int GRID_ITEM = 5;
 
 final int GRID_RATIO = 15;
 
 final int[] DIRX = {2, -2, 0, 0};
 final int[] DIRY = {0, 0, 2, -2};
 
+//DIRECTION OF DOOR IN A ROOM
 final int[] DIR = {0, 1, 2, 3};
 final int[] DIR_MIRROR = {1, 0, 3, 2};
 
@@ -65,7 +81,6 @@ final int DIR_UP = 3;
 
 
 float TILE_SIZE_PIXELS;
-
 
 
 //=====ROOMS=====\\
@@ -104,6 +119,10 @@ final int PLAYER_STARTING_HEALTH = 6;
 
 
 //=====PROJECTILES=====\\
+
+
+
+final int ITEM_AMOUNT = 20;
 
 
 final int PROJECTILE_PLAYER = 0;

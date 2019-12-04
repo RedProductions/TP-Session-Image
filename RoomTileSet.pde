@@ -1,3 +1,6 @@
+///
+///Images needed for the Room
+///
 static class RoomTileSet{
   
   static PImage[] images;
@@ -7,7 +10,7 @@ static class RoomTileSet{
   
   static void generate(PApplet app){
     
-    images = new PImage[21];
+    images = new PImage[31];
     
     images[TILES_BOTTOM] = app.loadImage("gfx/rooms/walls/bottomwall.png");
     images[TILES_TOP] = app.loadImage("gfx/rooms/walls/topwall.png");
@@ -35,6 +38,18 @@ static class RoomTileSet{
     images[TILES_LEFT_DOOR_NEXT] = app.loadImage("gfx/rooms/walls/leftdoornext.png");
     
     images[TILES_FLOOR] = app.loadImage("gfx/rooms/walls/floor.png");
+    images[TILES_DEFAULT_ITEM] = app.loadImage("gfx/rooms/walls/item.png");
+    images[TILES_DEFAULT_ITEM_OPENED] = app.loadImage("gfx/rooms/walls/itemopened.png");
+    
+    images[TILES_BOTTOM_DOOR_LOCKED_BOSS] = app.loadImage("gfx/rooms/walls/bottomdoorclosedboss.png");
+    images[TILES_TOP_DOOR_LOCKED_BOSS] = app.loadImage("gfx/rooms/walls/topdoorclosedboss.png");
+    images[TILES_RIGHT_DOOR_LOCKED_BOSS] = app.loadImage("gfx/rooms/walls/rightdoorclosedboss.png");
+    images[TILES_LEFT_DOOR_LOCKED_BOSS] = app.loadImage("gfx/rooms/walls/leftdoorclosedboss.png");
+    
+    images[TILES_BOTTOM_DOOR_BOSS] = app.loadImage("gfx/rooms/walls/bottomdoorboss.png");
+    images[TILES_TOP_DOOR_BOSS] = app.loadImage("gfx/rooms/walls/topdoorboss.png");
+    images[TILES_RIGHT_DOOR_BOSS] = app.loadImage("gfx/rooms/walls/rightdoorboss.png");
+    images[TILES_LEFT_DOOR_BOSS] = app.loadImage("gfx/rooms/walls/leftdoorboss.png");
     
     tileSizeX = images[TILES_FLOOR].width;
     tileSizeY = images[TILES_FLOOR].height;

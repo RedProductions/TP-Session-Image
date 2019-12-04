@@ -1,3 +1,6 @@
+///
+///Images needed for the Particle
+///
 static class ParticleTileSet{
   
   static PImage[] images;
@@ -33,6 +36,9 @@ static class ParticleTileSet{
     return null;
   }
   
+  ///
+  ///Gives the appropriate image by its given type
+  ///
   static PImage getImage(ParticleType type){
     
     switch(type){

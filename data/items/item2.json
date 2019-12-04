@@ -1,0 +1,20 @@
+{
+  "name": "AUSSIE",
+  "imageIndex": 2,
+  "upgrade": true,
+  "Values": {
+    "SPEED": 0.8,
+    "SIZE": 1.25,
+    "FIRERATE": 0.95
+  },
+  "Attributes": {
+    "PIERCING": false,
+    "SPLIT": false,
+    "BOOMERANG": true,
+    "RANDOMHUE": false
+  },
+  "Player": {
+    "SPEED": 1,
+    "HEALTH": 0
+  }
+}

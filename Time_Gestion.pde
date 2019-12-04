@@ -6,6 +6,9 @@ float deltaTime = 0;
 
 float lastRefresh = 0;
 
+///
+///Handles the time related variables
+///
 void timeCalc(){
   
   
