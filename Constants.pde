@@ -122,7 +122,7 @@ final int PLAYER_STARTING_HEALTH = 6;
 
 
 
-final int ITEM_AMOUNT = 20;
+final int ITEM_AMOUNT = 26;
 
 
 final int PROJECTILE_PLAYER = 0;

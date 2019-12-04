@@ -149,7 +149,9 @@ class Enveloppe{
   ///
   void nextLevel(){
     
+    
     level++;
+    
     map = new Map(level);
     
     message = new Message();
@@ -169,6 +171,7 @@ class Enveloppe{
         soundPlayer.resetMusic();
       }
       player = new Player(map.getCurrentRoom());
+      level = 0;
     }else {
       player.resetLevel(map.getCurrentRoom(), level);
     }

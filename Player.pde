@@ -359,10 +359,13 @@ class Player extends GObject{
       }
       
       Room newRoom = view.getRoom().getRoom(doorDir);
+      
+      projectiles.clearProjectiles();
+      
       if(!nextLevel){
         
         view.setRoom(newRoom);
-      
+        
         if(doorDir == DIR_LEFT){
           
           pos.x -= (width/VIEWPORT_GRID_RATIO)*2;
