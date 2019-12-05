@@ -23,6 +23,8 @@ class GUI{
   PVector levelPos;
   PVector levelSize;
   
+  ArrayList<String> modifiers;
+  
   
   GUI(){
     
@@ -44,6 +46,8 @@ class GUI{
     
     levelImageSizeX = room.width;
     levelImageSizeY = room.height;
+    
+    modifiers = new ArrayList<String>();
     
   }
   
@@ -113,10 +117,55 @@ class GUI{
       
       popMatrix();
       
+    }
+    
+    
+    textSize(height/40);
+    
+    float currentPosX = height/100;
+    float currentPosY = healthPos.y + healthSize.y + height/50;
+    for(String part : modifiers){
+      
+      fill(0, 0);
+      rect(currentPosX-1, currentPosY-1, textWidth(part)+1, height/50 + 1);
+      
+      fill(200);
+      text(part, currentPosX + 1, currentPosY);
+      text(part, currentPosX - 1, currentPosY);
+      text(part, currentPosX, currentPosY + 1);
+      text(part, currentPosX, currentPosY - 1);
+      
+      pushMatrix();
+      translate(0, 0, 1);
+      
+      fill(0);
+      text(part, currentPosX, currentPosY);
+      
+      popMatrix();
+      
+      currentPosY += textAscent();
+      
+    }
+    
+    
+    if(frameRate < 60){
+      
+      stroke(200, 0, 0);
+      noFill();
+      
+      if(frameRate < 30){
+        fill(200, 0, 0);
+      }
+      
+      
+      rect(width - width/50, height - height/60, width/100, height/120);
       
     }
     
   }
   
+  void addModifierName(String name){
+    modifiers.add(name);
+  }
   
 }

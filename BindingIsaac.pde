@@ -88,12 +88,15 @@ void printToDoList(){
   println("===========04/12===========");
   println("===========================");
   println("=========IMPORTANT=========");
-  println("-Fix cam glitch on edges    ->    fixes tiles unalignment with collisions                                      [?]");
+  println("-Fix cam glitch on edges    ->    fixes tiles unalignment with collisions                                      [ ]");
   println("-Make image for level completed amount (bottom left GUI)    ->    fixes clamping of squares                    [X]");
   println("-Limit projectile sizes (down)    ->    PREVENTS projectiles form being too small too be seen                  [X]");
+  println("-Fix sticky keys    ->    Fixes player stop firing when changing shooting direction                            [ ]");
   println("===========================");
   println("=======WOULD BE NICE=======");
-  println("-Make more items with more attributes                                                                          [ ]");
+  println("-Make more items with more attributes                                                                         [...]");
+  println("-Make string list of modifiers gotten on GUI                                                                   [X]");
+  println("-Fix string list of modifiers clamping on GUI                                                                  [ ]");
   println("===========================");
   println("==========DETAILS==========");
   println("-Make fly hurt sound                                                                                           [ ]");

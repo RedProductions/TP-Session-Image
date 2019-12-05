@@ -86,6 +86,7 @@ class Room{
     messObs.notifyObs();
     messObs.message = lastModifierName;
   }
+  String getLastModifierName(){return lastModifierName;}
   
   MessageObservable getMessageObservale(){return messObs;}
   

@@ -93,43 +93,50 @@ class Projectiles{
   ///
   void addProjectile(PVector pos, PVector vel, int index){
     
-    Projectile[] part = new Projectile[4];
+    ArrayList<Projectile> spawn = new ArrayList<Projectile>();
     
-    if(modifier.getAtt(AttributesModifiers.SPLIT)){
-      part[0] = new Projectile(pos, vel.copy().rotate(QUARTER_PI/2), index);
-      part[1] = new Projectile(pos, vel.copy().rotate(-QUARTER_PI/2), index);
+    int spawnAmount = 1;
+    float angleStep = 0;
+    float angleOffset = 0;
+    
+    if(modifier.getAtt(AttributesModifiers.QUADSHOT)){
+      spawnAmount = 4;
+      angleStep = QUARTER_PI/6;
+      angleOffset = -QUARTER_PI/3;
     }else if(modifier.getAtt(AttributesModifiers.TRISHOT)){
-      part[0] = new Projectile(pos, vel.copy(), index);
-      part[1] = new Projectile(pos, vel.copy().rotate(-QUARTER_PI/4), index);
-      part[2] = new Projectile(pos, vel.copy().rotate(QUARTER_PI/4), index);
-    }else if(modifier.getAtt(AttributesModifiers.QUADSHOT)){
-      part[0] = new Projectile(pos, vel.copy().rotate(QUARTER_PI/6), index);
-      part[1] = new Projectile(pos, vel.copy().rotate(-QUARTER_PI/6), index);
-      part[2] = new Projectile(pos, vel.copy().rotate(QUARTER_PI/2), index);
-      part[3] = new Projectile(pos, vel.copy().rotate(-QUARTER_PI/2), index);
-    }else if(modifier.getAtt(AttributesModifiers.QUADDIR)){
-      part[0] = new Projectile(pos, vel.copy(), index);
-      part[1] = new Projectile(pos, vel.copy().rotate(HALF_PI), index);
-      part[2] = new Projectile(pos, vel.copy().rotate(PI), index);
-      part[3] = new Projectile(pos, vel.copy().rotate(PI + HALF_PI), index);
+      spawnAmount = 3;
+      angleStep = QUARTER_PI/4;
+      angleOffset = -QUARTER_PI/4;
+    }
+    
+    if(modifier.getAtt(AttributesModifiers.QUADDIR)){
+      for(int i = 0; i < 4; i++)
+        spawnProjectiles(pos, vel, index, spawn, HALF_PI*i, angleOffset, spawnAmount, angleStep);
+    }else if(modifier.getAtt(AttributesModifiers.SPLIT)){
+      spawnProjectiles(pos, vel, index, spawn, QUARTER_PI/2, angleOffset, spawnAmount, angleStep);
+      spawnProjectiles(pos, vel, index, spawn, -QUARTER_PI/2, angleOffset, spawnAmount, angleStep);
     }else if(modifier.getAtt(AttributesModifiers.BACKWARDS)){
-      part[0] = new Projectile(pos, vel.copy().rotate(PI), index);
+      spawnProjectiles(pos, vel, index, spawn, PI, angleOffset, spawnAmount, angleStep);
     }else {
-      part[0] = new Projectile(pos, vel, index);
+      spawnProjectiles(pos, vel, index, spawn, 0, angleOffset, spawnAmount, angleStep);
     }
     
     
-    for(int i = 0; i < part.length; i++){
+    for(Projectile part : spawn){
       
-      if(part[i] != null){
-        part[i].combineModifiers(modifier);
-        projectiles.add(part[i]);
-        partObserver.addObservable(part[i].getParticleObservable());
-        soundObserver.addObservable(part[i].getSoundObservable());
-      }
+      part.combineModifiers(modifier);
+      projectiles.add(part);
+      partObserver.addObservable(part.getParticleObservable());
+      soundObserver.addObservable(part.getSoundObservable());
       
     }
     
+  }
+  
+  void spawnProjectiles(PVector pos, PVector vel, int index, ArrayList<Projectile> spawn, float angle, float offset, int amount, float step){
+    for(int i = 0; i < amount; i++){
+      spawn.add(new Projectile(pos, vel.copy().rotate((angle + offset) + step*i), index));
+    }
   }
   
   

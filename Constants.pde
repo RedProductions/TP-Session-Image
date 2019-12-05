@@ -10,7 +10,7 @@ final float PIXEL_TO_METER = 100;
 
 
 final boolean DEBUG = false;
-final boolean SV_CHEAT = false;
+final boolean SV_CHEAT = true;
 
 //=====TILES=====\\
 

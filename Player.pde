@@ -88,8 +88,8 @@ class Player extends GObject{
     
     
     //UNCOMMENT FOR GOD MODE
-    //modifier.getAttributeMods()[AttributesModifiers.RANDOMHUE.ordinal()] = true;
-    //modifier.getAttributeMods()[AttributesModifiers.PIERCING.ordinal()] = true;
+    //modifier.getAttributeMods()[AttributesModifiers.SPLIT.ordinal()] = true;
+    //modifier.getAttributeMods()[AttributesModifiers.QUADSHOT.ordinal()] = true;
     //modifier.getValueMods()[ValuesModifiers.FIRERATE.ordinal()] = 0.25;
     //modifier.getValueMods()[ValuesModifiers.SIZE.ordinal()] = 3;
     
@@ -436,6 +436,7 @@ class Player extends GObject{
         combineModifiers(view.getRoom().getModifier());
         
         view.getRoom().takeModifier();
+        gui.addModifierName(view.getRoom().getLastModifierName());
       }
     }
     
