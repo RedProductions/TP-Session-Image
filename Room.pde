@@ -479,7 +479,7 @@ class Room{
   boolean generateModifier(){
     
     int fileIndex = int(random(ITEM_AMOUNT))+1;
-    //fileIndex = 26;
+    //fileIndex = 27;
     modifier = new Modifier();
     
     //LOAD MAIN JSON

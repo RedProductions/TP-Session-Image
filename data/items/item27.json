@@ -1,0 +1,17 @@
+{
+  "name": "HOVER",
+  "imageIndex": 0,
+  "upgrade": true,
+  "Values": {
+    "SPEED": 1,
+    "SIZE": 1.15,
+    "FIRERATE": 1.15
+  },
+  "Attributes": {
+	"HOVER": true
+  },
+  "Player": {
+    "SPEED": 1,
+    "HEALTH": 0
+  }
+}

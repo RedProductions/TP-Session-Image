@@ -86,6 +86,10 @@ class Projectile extends GObject{
       hue = random(255);
     }
     
+    if(currentMod.getAttributeMods()[AttributesModifiers.HOVER.ordinal()]){
+      vel.mult(0);
+    }
+    
   }
   
   

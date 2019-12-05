@@ -9,7 +9,7 @@ enum Sounds{
   FLY_DIE, BIG_FLY_HURT, BIG_FLY_DIE,                   //ENEMIES
   DOOR_LOCK, DOOR_UNLOCK,                               //ROOMS
   PLAYER_HURT, PLAYER_DIE, PLAYER_SHOOT,                //PLAYER
-  UPGRADE, DOWNGRADE
+  UPGRADE, DOWNGRADE                                    //MODIFIERS
   
 }
 
@@ -48,7 +48,7 @@ class SoundPlayer{
     sounds = new AudioSample[Sounds.values().length];
     
     
-    //Sounds.VALUE.ordinal();   -> value to index
+    //Sounds.VALUE.ordinal();              -> value to index
     //Sounds.values()[index];              -> index to value
     
     
@@ -79,7 +79,7 @@ class SoundPlayer{
       if(part.isNotified()){
         
         Sounds partSound = ((SoundObservable)part).getSound();
-        int index = Sounds.valueOf(partSound.toString()).ordinal();
+        int index = partSound.ordinal();
         
         if(sounds[index] != null){
           sounds[index].trigger();
